@@ -35,6 +35,67 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+
+        Schema::create('categories',function(Blueprint $table){
+            $table->id('category_id');
+            $table->string('category_name');
+            $table->text('description');
+            $table->timestamps();
+        });
+
+        Schema::create('products',function (Blueprint $table){
+            $table->id('product_id')->primary();
+            $table->string('product_name',200);
+            $table->string('product_image');
+            $table->text('description');
+            $table->integer('price');
+            $table->integer('stock');
+            $table->unsignedBigInteger('category_id'); 
+            $table->foreign('category_id')->references('category_id')->on('categories')->onDelete('cascade');
+            $table->timestamps(); 
+        });
+
+        Schema::create('orders', function (Blueprint $table) {
+            $table->id('order_id'); // ID unik untuk setiap order
+            $table->unsignedBigInteger('user_id'); // ID pengguna yang membuat order
+            $table->dateTime('order_date'); // Tanggal pemesanan
+            $table->integer('total_amount'); // Total jumlah uang yang dibayar
+            $table->string('status')->default('pending'); // Status pesanan (e.g., pending, completed)
+            $table->timestamps(); // Kolom created_at dan updated_at
+
+            // Relasi ke tabel users
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+        });
+
+        // Tabel order_details
+        Schema::create('order_details', function (Blueprint $table) {
+            $table->id('order_detail_id'); // ID unik untuk setiap detail
+            $table->unsignedBigInteger('order_id'); // ID order yang terkait
+            $table->unsignedBigInteger('product_id'); // ID produk yang dipesan
+            $table->integer('quantity'); // Jumlah produk yang dipesan
+            $table->integer('price'); // Harga per unit produk
+            $table->integer('subtotal'); // Total harga untuk produk ini (quantity * price)
+            $table->timestamps(); // Kolom created_at dan updated_at
+
+            // Relasi ke tabel orders
+            $table->foreign('order_id')->references('order_id')->on('orders')->onDelete('cascade');
+            // Relasi ke tabel products
+            $table->foreign('product_id')->references('product_id')->on('products')->onDelete('cascade');
+        });
+
+        Schema::create('product_reviews', function (Blueprint $table) {
+            $table->id('review_id'); // ID unik untuk setiap review
+            $table->unsignedBigInteger('user_id'); // ID pengguna yang memberikan review
+            $table->unsignedBigInteger('product_id'); // ID produk yang direview
+            $table->tinyInteger('rating')->unsigned(); // Rating produk (1-5)
+            $table->text('review')->nullable(); // Isi review (opsional)
+            $table->timestamps(); // Kolom created_at dan updated_at
+
+            // Relasi ke tabel users
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            // Relasi ke tabel products
+            $table->foreign('product_id')->references('product_id')->on('products')->onDelete('cascade');
+        });
     }
 
     /**
