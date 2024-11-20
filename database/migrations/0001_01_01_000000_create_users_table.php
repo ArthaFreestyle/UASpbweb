@@ -37,7 +37,7 @@ return new class extends Migration
         });
 
         Schema::create('categories',function(Blueprint $table){
-            $table->id('category_id');
+            $table->id('category_id')->primary();
             $table->string('category_name');
             $table->text('description');
             $table->timestamps();
@@ -45,7 +45,7 @@ return new class extends Migration
 
         Schema::create('products',function (Blueprint $table){
             $table->id('product_id')->primary();
-            $table->string('product_name',200);
+            $table->string('product_name',200)->nullable();
             $table->string('product_image');
             $table->text('description');
             $table->integer('price');
@@ -91,7 +91,6 @@ return new class extends Migration
             $table->text('review')->nullable(); // Isi review (opsional)
             $table->timestamps(); // Kolom created_at dan updated_at
 
-            // Relasi ke tabel users
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             // Relasi ke tabel products
             $table->foreign('product_id')->references('product_id')->on('products')->onDelete('cascade');
