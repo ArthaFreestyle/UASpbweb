@@ -21,7 +21,7 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id('order_id'); // ID unik untuk setiap order
             $table->unsignedBigInteger('user_id'); // ID pengguna yang membuat order
-            $table->unsignedBigInteger('promo_code_id');
+            $table->unsignedBigInteger('promo_code_id')->nullable();
             $table->dateTime('order_date'); // Tanggal pemesanan
             $table->integer('total_amount'); // Total jumlah uang yang dibayar
             $table->string('status')->default('pending'); // Status pesanan (e.g., pending, completed)

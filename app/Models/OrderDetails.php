@@ -8,6 +8,8 @@ class OrderDetails extends Model
 {
     protected $table = 'order_details';
 
+    protected $primaryKey = 'order_detail_id';
+
     protected $fillable = [
         'order_id',
         'product_id',
@@ -17,10 +19,10 @@ class OrderDetails extends Model
     ];
 
     public function order(){
-        return $this->belongsTo(Orders::class);
+        return $this->belongsTo(Orders::class,'order_id','order_id');
     }
 
     public function product(){
-        return $this->belongsTo(Products::class);
+        return $this->belongsTo(Products::class,'product_id','product_id');
     }
 }
